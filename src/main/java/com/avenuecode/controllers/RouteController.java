@@ -21,11 +21,15 @@ import java.util.Optional;
 @RequestMapping("/routes")
 public class RouteController {
 
-    @Autowired
-    private GraphRepository graphRepository;
+    private final GraphRepository graphRepository;
+
+    private final RouteService routeService;
 
     @Autowired
-    private RouteService routeService;
+    public RouteController(RouteService routeService, GraphRepository graphRepository) {
+        this.routeService = routeService;
+        this.graphRepository = graphRepository;
+    }
 
 
     @GetMapping("/{graphId}/from/{source}/to/{target}")

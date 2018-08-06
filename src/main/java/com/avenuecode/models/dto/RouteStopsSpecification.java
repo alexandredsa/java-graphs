@@ -59,21 +59,4 @@ public class RouteStopsSpecification {
 
         return this.routes.get(this.routes.size() - 1);
     }
-
-
-    /*public RouteStopsSpecification buildFromRoutes() {
-        if (routes.size() == 0) {
-            throw new UnsupportedOperationException();
-        }
-
-        this.route = routes.get(0).getSource();
-        this.stops = routes.size();
-
-        this.route += routes.stream()
-                .filter(route -> !route.getTarget().equals(this.route))
-                .map(Route::getTarget)
-                .collect(Collectors.joining());
-
-        return this;
-    }*/
 }

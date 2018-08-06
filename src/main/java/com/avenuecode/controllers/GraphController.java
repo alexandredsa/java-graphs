@@ -17,8 +17,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/graph")
 public class GraphController {
+    private final GraphRepository graphRepository;
+
     @Autowired
-    private GraphRepository graphRepository;
+    public GraphController(GraphRepository graphRepository) {
+        this.graphRepository = graphRepository;
+    }
 
     @PostMapping
     ResponseEntity<Graph> save(@RequestBody Graph graphRequest) {
