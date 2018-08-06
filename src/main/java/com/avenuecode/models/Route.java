@@ -28,6 +28,11 @@ public class Route {
     public Route() {
     }
 
+    public Route(String source, String target) {
+        this.source = source;
+        this.target = target;
+    }
+
     public Route(String source, String target, int distance) {
         this.source = source;
         this.target = target;
