@@ -29,15 +29,14 @@ public class RouteController {
 
 
     @GetMapping("/{graphId}/from/{source}/to/{target}")
-    ResponseEntity<List<RouteStopsSpecification>> findAvailableRoutes(@PathVariable("graphId") Long graphId, @PathVariable("source") String source, @PathVariable("target") String target, @RequestParam("maxStops") int maxStops) {
+    ResponseEntity<List<RouteStopsSpecification>> findAvailableRoutes(@PathVariable("graphId") Long graphId, @PathVariable("source") String source, @PathVariable("target") String target, @RequestParam("maxStops") Optional<Integer> maxStops) {
         Optional<Graph> graph = Optional.ofNullable(graphRepository.findOne(graphId));
 
         if (!graph.isPresent()) {
             throw new GraphNotFoundException();
         }
 
-
-        List<RouteStopsSpecification> specifications = routeService.findAvailableRoutes(graph.get(), source, target, maxStops);
+        List<RouteStopsSpecification> specifications = routeService.findAvailableRoutes(graph.get(), source, target, maxStops.orElseGet(() -> graph.get().getData().size()));
         return new ResponseEntity<>(specifications, HttpStatus.OK);
     }
 }
