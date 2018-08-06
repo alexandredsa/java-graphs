@@ -4,6 +4,8 @@ import com.avenuecode.exceptions.graph.GraphNotFoundException;
 import com.avenuecode.models.Graph;
 import com.avenuecode.repository.GraphRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -19,19 +21,20 @@ public class GraphController {
     private GraphRepository graphRepository;
 
     @PostMapping
-    Graph save(@RequestBody Graph graph) {
-        return graphRepository.save(graph);
+    ResponseEntity<Graph> save(@RequestBody Graph graphRequest) {
+        Graph graph = graphRepository.save(graphRequest);
+
+        return new ResponseEntity<>(graph, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    Graph findById(@PathVariable("id") Long id) {
+    ResponseEntity<Graph> findById(@PathVariable("id") Long id) {
         Optional<Graph> graph = Optional.ofNullable(graphRepository.findOne(id));
 
         if (!graph.isPresent()) {
             throw new GraphNotFoundException();
         }
 
-        return graph.get();
+        return new ResponseEntity<>(graph.get(), HttpStatus.OK);
     }
-
 }
