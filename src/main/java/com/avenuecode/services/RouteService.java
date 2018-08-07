@@ -18,6 +18,7 @@ public class RouteService extends BasePathService {
         List<PossibleRoutes> possibleRoutes = this.findPossibleRoutes(graph, source, target);
         List<RouteStopsSpecification> routeStopsSpecifications = possibleRoutes.stream()
                 .map(possibleRoute -> (RouteStopsSpecification) possibleRoute.fillRouteProcessor(new RouteStopsSpecification()))
+                .filter(possibleRoute -> possibleRoute.getStops() <= maxStops)
                 .collect(Collectors.toList());
 
         return routeStopsSpecifications;
