@@ -47,7 +47,7 @@ public class DistanceController {
         }
 
 
-        ResponseDistancePath responseDistancePath = null;
+        ResponseDistancePath responseDistancePath;
         try {
             responseDistancePath = distanceService.findDistanceForPath(graph.get(), requestDistancePath.get().getPath());
         } catch (NoSuchRouteException e) {
