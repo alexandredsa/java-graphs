@@ -1,5 +1,6 @@
 package com.avenuecode.services;
 
+import com.avenuecode.exceptions.distance.NoSuchRouteException;
 import com.avenuecode.models.Graph;
 import com.avenuecode.models.Route;
 import com.avenuecode.models.dto.DistanceBetweenTwoTowns;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class DistanceService extends BasePathService {
 
-    public ResponseDistancePath findDistanceForPath(Graph graph, List<String> path) {
+    public ResponseDistancePath findDistanceForPath(Graph graph, List<String> path) throws NoSuchRouteException {
         List<Route> routes = graph.getData();
         List<Route> routesFound = new ArrayList<>();
         for (int i = 0; i < path.size() - 1; i++) {
@@ -29,7 +30,7 @@ public class DistanceService extends BasePathService {
                     .findFirst().orElse(null);
 
             if (routeFound == null) {
-                return new ResponseDistancePath(-1);
+                throw new NoSuchRouteException();
             }
 
             routesFound.add(routeFound);
@@ -42,6 +43,10 @@ public class DistanceService extends BasePathService {
     }
 
     public DistanceBetweenTwoTowns findDistanceBetweenTwoTowns(Graph graph, String source, String target) {
+        if(source.equals(target)){
+            return new DistanceBetweenTwoTowns(0);
+        }
+
         List<PossibleRoutes> possibleRoutes = this.findPossibleRoutes(graph, source, target);
         List<DistanceBetweenTwoTowns> distanceBetweenTwoTowns = possibleRoutes.stream()
                 .map(possibleRoute -> (DistanceBetweenTwoTowns) possibleRoute.fillRouteProcessor(new DistanceBetweenTwoTowns()))

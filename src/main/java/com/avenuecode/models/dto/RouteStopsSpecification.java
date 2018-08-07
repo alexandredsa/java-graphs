@@ -59,4 +59,22 @@ public class RouteStopsSpecification implements RoutesProcessor {
 
         return this.routes.get(this.routes.size() - 1);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RouteStopsSpecification that = (RouteStopsSpecification) o;
+
+        if (stops != that.stops) return false;
+        return route != null ? route.equals(that.route) : that.route == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = route != null ? route.hashCode() : 0;
+        result = 31 * result + stops;
+        return result;
+    }
 }

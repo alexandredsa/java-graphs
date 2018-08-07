@@ -1,8 +1,8 @@
 package com.avenuecode.controllers;
 
+import com.avenuecode.exceptions.distance.NoSuchRouteException;
 import com.avenuecode.exceptions.graph.GraphNotFoundException;
 import com.avenuecode.models.Graph;
-import com.avenuecode.models.Route;
 import com.avenuecode.models.dto.DistanceBetweenTwoTowns;
 import com.avenuecode.models.dto.RequestDistancePath;
 import com.avenuecode.models.dto.ResponseDistancePath;
@@ -13,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Created by alexandre on 05/08/18.
@@ -45,11 +42,17 @@ public class DistanceController {
             throw new GraphNotFoundException();
         }
 
-        if (!requestDistancePath.isPresent() || requestDistancePath.get().getPath().size() == 0) {
+        if (!requestDistancePath.isPresent() || requestDistancePath.get().getPath().size() <= 1) {
             return new ResponseEntity<>(new ResponseDistancePath(0), HttpStatus.OK);
         }
 
-        ResponseDistancePath responseDistancePath = distanceService.findDistanceForPath(graph.get(), requestDistancePath.get().getPath());
+
+        ResponseDistancePath responseDistancePath = null;
+        try {
+            responseDistancePath = distanceService.findDistanceForPath(graph.get(), requestDistancePath.get().getPath());
+        } catch (NoSuchRouteException e) {
+            responseDistancePath = new ResponseDistancePath(-1);
+        }
 
         return new ResponseEntity<>(responseDistancePath, HttpStatus.OK);
     }
@@ -62,7 +65,6 @@ public class DistanceController {
         if (!graph.isPresent()) {
             throw new GraphNotFoundException();
         }
-
 
         DistanceBetweenTwoTowns distanceBetweenTwoTowns = distanceService.findDistanceBetweenTwoTowns(graph.get(), source, target);
         return new ResponseEntity<>(distanceBetweenTwoTowns, HttpStatus.OK);

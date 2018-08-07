@@ -45,4 +45,9 @@ public class PossibleRoutes {
         this.routes.forEach(routesProcessor::addRoute);
         return routesProcessor;
     }
+
+
+    public boolean alreadyPassedThisTown(String target) {
+       return this.routes.stream().filter(r -> r.getTarget().equals(target)).count() > 0;
+    }
 }

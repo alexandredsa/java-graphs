@@ -20,6 +20,10 @@ public class DistanceBetweenTwoTowns implements RoutesProcessor{
         this.routes = routes;
     }
 
+    public DistanceBetweenTwoTowns(int distance) {
+        this.distance = distance;
+    }
+
     public DistanceBetweenTwoTowns() {
     }
 

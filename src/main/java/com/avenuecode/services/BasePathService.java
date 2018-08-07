@@ -33,7 +33,7 @@ public abstract class BasePathService {
                     .filter(possibleRoute -> !possibleRoute.reachedTarget(target))
                     .map(possibleRoute -> {
                         List<Route> filteredRoutes = graph.getData().stream()
-                                .filter(r -> !possibleRoute.hasTown(r.getTarget()))
+                                .filter(r -> !possibleRoute.alreadyPassedThisTown(r.getTarget()))
                                 .filter(r -> possibleRoute.getLastRoute().getTarget().equals(r.getSource()))
                                 .collect(Collectors.toList());
 
