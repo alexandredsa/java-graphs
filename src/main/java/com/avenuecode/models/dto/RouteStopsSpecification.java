@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by alexandre on 05/08/18.
  */
-public class RouteStopsSpecification {
+public class RouteStopsSpecification implements RoutesProcessor {
     private String route;
     private int stops;
 

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by alexandre on 05/08/18.
  */
-public class DistanceBetweenTwoTowns implements Cloneable {
+public class DistanceBetweenTwoTowns implements RoutesProcessor{
     private List<String> path = new ArrayList<>();
     private int distance = -1;
 
@@ -21,6 +21,14 @@ public class DistanceBetweenTwoTowns implements Cloneable {
     }
 
     public DistanceBetweenTwoTowns() {
+    }
+
+    public static DistanceBetweenTwoTowns clone(DistanceBetweenTwoTowns that) {
+        DistanceBetweenTwoTowns distanceBetweenTwoTowns = new DistanceBetweenTwoTowns();
+        distanceBetweenTwoTowns.path = new ArrayList<>(that.getPath());
+        distanceBetweenTwoTowns.distance = that.getDistance();
+        distanceBetweenTwoTowns.routes = new ArrayList<>(that.getRoutes());
+        return distanceBetweenTwoTowns;
     }
 
 
@@ -66,18 +74,4 @@ public class DistanceBetweenTwoTowns implements Cloneable {
         return this.routes.get(this.routes.size() - 1);
     }
 
-    @Override
-    public DistanceBetweenTwoTowns clone(){
-        try {
-            return (DistanceBetweenTwoTowns) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public boolean hasTargetInRoutes(String target) {
-        return this.routes.stream().anyMatch(r -> r.getTarget().equals(target));
-    }
 }

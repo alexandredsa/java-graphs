@@ -3,6 +3,7 @@ package com.avenuecode.services;
 import com.avenuecode.models.Graph;
 import com.avenuecode.models.Route;
 import com.avenuecode.models.dto.DistanceBetweenTwoTowns;
+import com.avenuecode.models.dto.PossibleRoutes;
 import com.avenuecode.models.dto.ResponseDistancePath;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
  * Created by alexandre on 05/08/18.
  */
 @Service
-public class DistanceService {
+public class DistanceService extends BasePathService {
 
     public ResponseDistancePath findDistanceForPath(Graph graph, List<String> path) {
         List<Route> routes = graph.getData();
@@ -41,39 +42,13 @@ public class DistanceService {
     }
 
     public DistanceBetweenTwoTowns findDistanceBetweenTwoTowns(Graph graph, String source, String target) {
-        List<DistanceBetweenTwoTowns> distanceBetweenTwoTownsList = null;
+        List<PossibleRoutes> possibleRoutes = this.findPossibleRoutes(graph, source, target);
+        List<DistanceBetweenTwoTowns> distanceBetweenTwoTowns = possibleRoutes.stream()
+                .map(possibleRoute -> (DistanceBetweenTwoTowns) possibleRoute.fillRouteProcessor(new DistanceBetweenTwoTowns()))
+                .collect(Collectors.toList());
 
-
-        for (int i = 1; i <= graph.getData().size(); i++) {
-            if (i == 1) {
-                distanceBetweenTwoTownsList = graph.getData().stream()
-                        .filter(route -> route.getSource().equals(source))
-                        .map(route -> new DistanceBetweenTwoTowns().addRoute(route))
-                        .collect(Collectors.toList());
-
-                continue;
-            }
-
-            distanceBetweenTwoTownsList.addAll(distanceBetweenTwoTownsList
-                    .stream()
-                    .filter(dbtt -> !dbtt.hasTown(target))
-                    .map(dbtt -> graph.getData().stream()
-                            .filter(r -> dbtt.hasTargetInRoutes(r.getSource()))
-                            .filter(r -> !dbtt.hasTown(r.getTarget()))
-                             .map(r -> {
-                                 DistanceBetweenTwoTowns distanceBetweenTwoTowns = dbtt.clone();
-                                 distanceBetweenTwoTowns.addRoute(r);
-                                 return distanceBetweenTwoTowns;
-                             })
-                             .collect(Collectors.toList()))
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList()));
-        }
-
-        return findShortestDistanceBetweenTwoTowns(distanceBetweenTwoTownsList, target);
-
+        return findShortestDistanceBetweenTwoTowns(distanceBetweenTwoTowns, target);
     }
-
 
     private DistanceBetweenTwoTowns findShortestDistanceBetweenTwoTowns(List<DistanceBetweenTwoTowns> distanceBetweenTwoTownsList, String target) {
         List<DistanceBetweenTwoTowns> distanceBetweenTwoTowns = distanceBetweenTwoTownsList.stream()
